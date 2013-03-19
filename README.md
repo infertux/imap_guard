@@ -1,59 +1,70 @@
 # ImapGuard
 
-TODO: Write a gem description
+A guard for your IMAP mailboxes.
 
 ## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'imap_guard'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
 
     $ gem install imap_guard
 
 ## Usage
 
-TODO: Write usage instructions here
-
+Example initialization:
 
 ```ruby
 require 'imap_guard'
-load File.expand_path('../settings.rb', __FILE__)
-settings = SETTINGS.merge({ read_only: true })
 
-s = IMAPGuard::Guard.new settings
-s.select 'INBOX.ops'
+SETTINGS = {
+  host: 'mail.google.com',
+  port: 993,
+  username: 'login',
+  password: 'pass',
+  read_only: true # don't perform any modification aka dry-run mode
+}
 
+guard = IMAPGuard::Guard.new SETTINGS
+guard.select 'INBOX.ops' # select the mailbox
+```
+
+IMAP search query syntax can be a bit tricky.
+`IMAPGuard::Query` can help you to build queries with a simple Ruby DSL:
+
+```ruby
 query = IMAPGuard::Query.new.before(7).subject("abc").from("root")
-s.delete query
+p query #=> SEEN UNANSWERED UNFLAGGED BEFORE 12-Mar-2013 SUBJECT "abc" FROM "root"
+guard.delete query # will delete every emails which match this query
+```
 
-pattern = "monit alert -- Resource limit "
-query = IMAPGuard::Query.new.subject(pattern).before(7)
-s.delete query do |mail|
-  # the pattern given to subject() is a mere string
-  # pass an optional block to perform advanced filtering such as regexp matching
-  # the yielded mail object is an instance of the current mail providing many methods
-  mail.subject.start_with? pattern
-end
+Unfortunately, IMAP search queries are limited too.
+For instance, the pattern passed to `subject` and `from` is a mere string.
+IMAP doesn't allow advanced filtering such as regexp matching.
 
+To do so, you can pass an optional block to `delete`.
+The yielded object is a [Mail](https://github.com/mikel/mail) instance of the current mail providing many methods.
+However, wrapping the mail into a nice `Mail` object is slow and you should avoid to use it if you can.
+
+```ruby
 query = IMAPGuard::Query.new.before(7).subject("Logwatch for ")
-s.delete query do |mail|
-  mail.subject =~ /\ALogwatch for \w \(Linux\)\Z/
+guard.delete query do |mail|
+  mail.subject =~ /\ALogwatch for \w \(Linux\)\Z/ and \
+  mail.multipart? and \
+  mail.parts.length == 2
 end
+```
 
-# You can also forge your own raw IMAP search queries like this
+Finally, you can always forge your own raw IMAP search queries (the [RFC](http://tools.ietf.org/html/rfc3501#section-6.4.4) can help in that case):
+
+```ruby
 query = 'SEEN SUBJECT "ALERT" FROM "root"'
-s.delete query do |mail|
-  mail.subject == "ALERT" and \
+guard.delete query do |mail|
   mail.body == "ALERT"
 end
+```
 
-s.close
+Be aware that emails won't be touched until you `expunge` or `close` the mailbox:
+
+```ruby
+guard.expunge # effectively delete emails marked as deleted
+guard.close # expunge then close the connection
 ```
 
 ## Contributing
