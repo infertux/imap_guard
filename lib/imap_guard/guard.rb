@@ -10,6 +10,7 @@ module IMAPGuard
       # http://www.ruby-doc.org/stdlib-1.9.3/libdoc/net/imap/rdoc/Net/IMAP.html#method-c-new
       @imap = Net::IMAP.new(@settings.host, @settings.port, true, nil, false)
       @imap.login(@settings.username, @settings.password)
+      verbose.puts "Logged in successfully"
     end
 
     def select mailbox
@@ -33,38 +34,48 @@ module IMAPGuard
       count = messages.size
       puts "Query: #{query.inspect}: #{count} results"
 
-      counter = 0
-      messages.each do |message_id|
-        counter += 1
-        # puts message_id
+      messages.each_with_index do |message_id, index|
+        puts "Processing UID #{message_id} (#{index + 1}/#{count})"
         mail = nil
         if block_given?
           msg = @imap.fetch(message_id, 'RFC822')[0].attr['RFC822']
           mail = Mail.read_from_string msg
-          result = yield mail
-          if result
-            # puts "Given filter matched"
-          else
-            # puts "Given filter returned falsy"
-            next
-          end
+          next unless yield(mail)
         end
 
-        print "Deleting UID #{message_id} (#{counter}/#{count})"
-        print " (DRY-RUN)" if @settings.read_only
+        verbose.print "Deleting UID #{message_id} (#{index + 1}/#{count})"
+        verbose.print " (DRY-RUN)" if @settings.read_only
         if mail
-          puts ": #{mail.subject} (#{mail.body.to_s.length})"
+          verbose.puts ": #{mail.subject} (#{mail.body.to_s.length})"
         else
-          puts
+          verbose.puts
         end
         @imap.store(message_id, "+FLAGS", [:Deleted])
       end
     end
 
+    def expunge
+      @imap.expunge
+    end
+
     def close
       puts "Expunging deleted messages and closing mailbox..."
-      # p imap.expunge
       @imap.close
+    end
+
+  private
+
+    def verbose
+      @verbose ||= if @settings.verbose
+        $stdout
+      else
+        # anonymous null object
+        Class.new do
+          def method_missing(*args, &block)
+            nil
+          end
+        end.new
+      end
     end
   end
 end
