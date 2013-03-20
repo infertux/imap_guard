@@ -1,46 +1,23 @@
 module IMAPGuard
-  class Query
-    SEEN = 'SEEN'
-    UNANSWERED = 'UNANSWERED'
-    UNFLAGGED = 'UNFLAGGED'
-    SUBJECT = "SUBJECT \"%s\""
-    FROM = "FROM \"%s\""
-    BEFORE = "BEFORE %s"
-
-    attr_reader :criteria
-
-    def initialize
-      @criteria = []
-      seen.unanswered.unflagged
-    end
-
-    def to_s
-      @criteria.join ' '
-    end
-
+  class Query < Array
     def seen
-      @criteria << SEEN
-      self
+      self << 'SEEN'
     end
 
     def unanswered
-      @criteria << UNANSWERED
-      self
+      self << 'UNANSWERED'
     end
 
     def unflagged
-      @criteria << UNFLAGGED
-      self
+      self << 'UNFLAGGED'
     end
 
     def subject string
-      @criteria << SUBJECT % string
-      self
+      self << 'SUBJECT' << string
     end
 
     def from string
-      @criteria << FROM % string
-      self
+      self << 'FROM' << string
     end
 
     def before date
@@ -55,8 +32,7 @@ module IMAPGuard
         raise ArgumentError, "#{date.inspect} is invalid"
       end
 
-      @criteria << BEFORE % date
-      self
+      self << 'BEFORE' << date
     end
   end
 end

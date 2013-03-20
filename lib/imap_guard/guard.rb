@@ -22,12 +22,8 @@ module IMAPGuard
     end
 
     def delete query
-      unless query.is_a? String
-        if query.respond_to? :to_s
-          query = query.to_s
-        else
-          raise ArgumentError, "query must provide #to_s"
-        end
+      unless [Array, String].any? { |type| query.is_a? type }
+        raise ArgumentError, "query must be either a string holding the entire search string, or a single-dimension array of search keywords and arguments"
       end
 
       messages = @imap.search query
@@ -46,7 +42,7 @@ module IMAPGuard
         verbose.print "Deleting UID #{message_id} (#{index + 1}/#{count})"
         verbose.print " (DRY-RUN)" if @settings.read_only
         if mail
-          verbose.puts ": #{mail.subject} (#{mail.body.to_s.length})"
+          verbose.puts ": #{mail.subject.inspect}"
         else
           verbose.puts
         end

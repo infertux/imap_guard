@@ -29,8 +29,9 @@ IMAP search query syntax can be a bit tricky.
 `IMAPGuard::Query` can help you to build queries with a simple Ruby DSL:
 
 ```ruby
-query = IMAPGuard::Query.new.before(7).subject("abc").from("root")
-p query #=> SEEN UNANSWERED UNFLAGGED BEFORE 12-Mar-2013 SUBJECT "abc" FROM "root"
+base_query = IMAPGuard::Query.new.unflagged.unanswered.seen.freeze
+query = base_query.dup.before(7).subject("abc").from("root")
+p query #=> ["UNFLAGGED", "UNANSWERED", "SEEN", "BEFORE", "13-Mar-2013", "SUBJECT", "abc", "FROM", "root"]
 guard.delete query # will delete every emails which match this query
 ```
 
@@ -43,8 +44,7 @@ The yielded object is a [Mail](https://github.com/mikel/mail) instance of the cu
 However, wrapping the mail into a nice `Mail` object is slow and you should avoid to use it if you can.
 
 ```ruby
-query = IMAPGuard::Query.new.before(7).subject("Logwatch for ")
-guard.delete query do |mail|
+guard.delete base_query.dup.before(7).subject("Logwatch for ") do |mail|
   mail.subject =~ /\ALogwatch for \w \(Linux\)\Z/ and \
   mail.multipart? and \
   mail.parts.length == 2
