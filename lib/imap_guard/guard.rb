@@ -1,13 +1,18 @@
 require 'net/imap'
-require 'mail'
 require 'ostruct'
+require 'mail'
+require 'colored'
 
 module IMAPGuard
   class Guard
-    def initialize settings
-      @settings = OpenStruct.new(settings).freeze
+    attr_reader :settings
 
-      # http://www.ruby-doc.org/stdlib-1.9.3/libdoc/net/imap/rdoc/Net/IMAP.html#method-c-new
+    def initialize settings
+      self.settings = settings
+    end
+
+    # @see http://www.ruby-doc.org/stdlib-1.9.3/libdoc/net/imap/rdoc/Net/IMAP.html#method-c-new
+    def login
       @imap = Net::IMAP.new(@settings.host, @settings.port, true, nil, false)
       @imap.login(@settings.username, @settings.password)
       verbose.puts "Logged in successfully"
@@ -21,33 +26,22 @@ module IMAPGuard
       end
     end
 
-    def delete query
-      unless [Array, String].any? { |type| query.is_a? type }
-        raise ArgumentError, "query must be either a string holding the entire search string, or a single-dimension array of search keywords and arguments"
-      end
-
-      messages = @imap.search query
-      count = messages.size
-      puts "Query: #{query.inspect}: #{count} results"
-
-      messages.each_with_index do |message_id, index|
-        puts "Processing UID #{message_id} (#{index + 1}/#{count})"
-        mail = nil
-        if block_given?
-          msg = @imap.fetch(message_id, 'RFC822')[0].attr['RFC822']
-          mail = Mail.read_from_string msg
-          next unless yield(mail)
-        end
-
-        verbose.print "Deleting UID #{message_id} (#{index + 1}/#{count})"
-        verbose.print " (DRY-RUN)" if @settings.read_only
-        if mail
-          verbose.puts ": #{mail.subject.inspect}"
-        else
-          verbose.puts
-        end
+    # @param mailbox Destination mailbox
+    def move query, mailbox, &filter
+      operation = lambda { |message_id|
+        @imap.copy(message_id, mailbox) unless @settings.read_only
         @imap.store(message_id, "+FLAGS", [:Deleted])
-      end
+        "moved to #{mailbox}".cyan
+      }
+      process query, operation, &filter
+    end
+
+    def delete query, &filter
+      operation = lambda { |message_id|
+        @imap.store(message_id, "+FLAGS", [:Deleted])
+        'deleted'.red
+      }
+      process query, operation, &filter
     end
 
     def expunge
@@ -61,6 +55,44 @@ module IMAPGuard
 
   private
 
+    def process query, operation
+      message_ids = search query
+      count = message_ids.size
+
+      message_ids.each_with_index do |message_id, index|
+        print "Processing UID #{message_id} (#{index + 1}/#{count}): "
+
+        result = true
+        if block_given?
+          mail = fetch_mail message_id
+          result = yield(mail)
+          verbose.print "(given filter result: #{result.inspect}) "
+        end
+
+        if result
+          puts operation.call(message_id)
+        else
+          puts "ignored".yellow
+        end
+      end
+    end
+
+    def fetch_mail message_id
+      msg = @imap.fetch(message_id, 'RFC822')[0].attr['RFC822']
+      Mail.read_from_string msg
+    end
+
+    def search query
+      unless [Array, String].any? { |type| query.is_a? type }
+        raise ArgumentError, "query must be either a string holding the entire search string, or a single-dimension array of search keywords and arguments"
+      end
+
+      messages = @imap.search query
+      puts "Query: #{query.inspect}: #{messages.count} results".cyan
+
+      messages
+    end
+
     def verbose
       @verbose ||= if @settings.verbose
         $stdout
@@ -72,6 +104,19 @@ module IMAPGuard
           end
         end.new
       end
+    end
+
+    def settings= settings
+      required = %w(host port username password).map!(&:to_sym)
+      missing = required - settings.keys
+      raise "Missing settings: #{missing}" unless missing.empty?
+
+      optional = %w(read_only verbose).map!(&:to_sym)
+      unknown = settings.keys - required - optional
+      raise "Unknown settings: #{unknown}" unless unknown.empty?
+
+      @settings = OpenStruct.new(settings).freeze
+      puts "DRY-RUN MODE ENABLED".yellow.bold.reversed if @settings.read_only
     end
   end
 end

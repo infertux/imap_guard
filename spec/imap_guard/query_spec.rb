@@ -2,9 +2,29 @@ require 'spec_helper'
 
 module IMAPGuard
   describe Query do
-
     describe "#initialize" do
       it { should be_empty }
+    end
+
+    describe "#seen" do
+      it "adds 'SEEN'" do
+        subject.seen
+        subject.last.should eq 'SEEN'
+      end
+    end
+
+    describe "#unanswered" do
+      it "adds 'UNANSWERED'" do
+        subject.unanswered
+        subject.last.should eq 'UNANSWERED'
+      end
+    end
+
+    describe "#unflagged" do
+      it "adds 'UNFLAGGED'" do
+        subject.unflagged
+        subject.last.should eq 'UNFLAGGED'
+      end
     end
 
     describe "#subject" do
@@ -58,7 +78,6 @@ module IMAPGuard
         end
       end
     end
-
   end
 end
 
