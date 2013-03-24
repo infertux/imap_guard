@@ -1,4 +1,4 @@
-# ImapGuard
+# ImapGuard [![Build Status](https://secure.travis-ci.org/infertux/imap_guard.png?branch=master)](https://travis-ci.org/infertux/imap_guard) [![Dependency Status](https://gemnasium.com/infertux/imap_guard.png)](https://gemnasium.com/infertux/imap_guard) [![Code Climate](https://codeclimate.com/github/infertux/imap_guard.png)](https://codeclimate.com/github/infertux/imap_guard)
 
 A guard for your IMAP mailboxes.
 
