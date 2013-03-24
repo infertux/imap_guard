@@ -155,7 +155,7 @@ module IMAPGuard
       context "with settings.verbose = true" do
         let(:guard) { guard_instance(verbose: true) }
 
-        it "outputs to $stdout" do
+        it "does output to $stdout" do
           $stdout.should_receive(:write).with("ham")
           guard.send(:verbose).print "ham"
         end
@@ -164,7 +164,7 @@ module IMAPGuard
       context "with settings.verbose = false" do
         let(:guard) { guard_instance(verbose: false) }
 
-        it "outputs to $stdout" do
+        it "does not output to $stdout" do
           $stdout.should_not_receive(:write)
           guard.send(:verbose).print "ham"
         end
