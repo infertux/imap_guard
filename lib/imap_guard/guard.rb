@@ -109,11 +109,11 @@ module IMAPGuard
     def settings= settings
       required = %w(host port username password).map!(&:to_sym)
       missing = required - settings.keys
-      raise "Missing settings: #{missing}" unless missing.empty?
+      raise ArgumentError, "Missing settings: #{missing}" unless missing.empty?
 
       optional = %w(read_only verbose).map!(&:to_sym)
       unknown = settings.keys - required - optional
-      raise "Unknown settings: #{unknown}" unless unknown.empty?
+      raise ArgumentError, "Unknown settings: #{unknown}" unless unknown.empty?
 
       @settings = OpenStruct.new(settings).freeze
       puts "DRY-RUN MODE ENABLED".yellow.bold.reversed if @settings.read_only

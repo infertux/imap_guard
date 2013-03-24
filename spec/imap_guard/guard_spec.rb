@@ -26,16 +26,6 @@ module IMAPGuard
       guard
     end
 
-    describe "#initialize" do
-      it "freezes the settings" do
-        guard = Guard.new(settings)
-
-        expect {
-          guard.settings.host = 'example.net'
-        }.to raise_error(TypeError, /frozen/)
-      end
-    end
-
     describe "#select" do
       context "with settings.read_only = true" do
         let(:guard) { guard_instance(read_only: true) }
@@ -178,6 +168,28 @@ module IMAPGuard
           $stdout.should_not_receive(:write)
           guard.send(:verbose).print "ham"
         end
+      end
+    end
+
+    describe "#settings=" do
+      it "freezes the settings" do
+        guard = Guard.new(settings)
+
+        expect {
+          guard.settings.host = 'example.net'
+        }.to raise_error(TypeError, /frozen/)
+      end
+
+      it "raises ArgumentError if any required key is missing" do
+        expect {
+          Guard.new({})
+        }.to raise_error ArgumentError, /missing/i
+      end
+
+      it "raises ArgumentError if any key is unknown" do
+        expect {
+          Guard.new(settings.merge(coffee: true))
+        }.to raise_error ArgumentError, /unknown/i
       end
     end
   end
