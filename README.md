@@ -2,6 +2,14 @@
 
 A guard for your IMAP mailboxes.
 
+ImapGuard connects to your IMAP server and processes your emails.
+You can finely pick them thanks to advanced search queries and Ruby blocks.
+Then you can `move` or `delete` them in batch.
+
+Of course, there is a _dry-run_ mode (i.e. read-only) available to double check what it would do.
+
+It can be used by a disposable script to clean things up or with a cron job to keep them tidy.
+
 ## Installation
 
     $ gem install imap_guard
@@ -22,6 +30,7 @@ SETTINGS = {
 }
 
 guard = IMAPGuard::Guard.new SETTINGS
+guard.login # authenticate the user
 guard.select 'INBOX.ops' # select the mailbox
 ```
 
@@ -67,10 +76,19 @@ guard.expunge # effectively delete emails marked as deleted
 guard.close # expunge then close the connection
 ```
 
+Oh, and there is a `move` method as well:
+
+```ruby
+guard.move query, 'destination_folder' do |mail|
+  # and it can take a filter block like `delete`
+end
+```
+
 ## Contributing
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+Bug reports and patches are most welcome.
+
+## License
+
+MIT
+
