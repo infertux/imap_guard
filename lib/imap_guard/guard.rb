@@ -81,6 +81,9 @@ module IMAPGuard
           puts "ignored".yellow
         end
       end
+
+    ensure
+      expunge
     end
 
     def fetch_mail message_id

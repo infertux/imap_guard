@@ -16,7 +16,7 @@ module IMAPGuard
     end
 
     let(:imap) {
-      double('Net::IMAP', search: [7, 28])
+      double('Net::IMAP', search: [7, 28], expunge: nil)
     }
 
     def guard_instance custom_settings = {}
