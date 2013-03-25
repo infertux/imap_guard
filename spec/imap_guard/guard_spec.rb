@@ -151,6 +151,13 @@ module IMAPGuard
       end
     end
 
+    describe "#disconnect" do
+      it "disconnects from the server" do
+        imap.should_receive(:disconnect)
+        guard_instance.disconnect
+      end
+    end
+
     describe "#verbose" do
       context "with settings.verbose = true" do
         let(:guard) { guard_instance(verbose: true) }

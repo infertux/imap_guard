@@ -63,6 +63,11 @@ module IMAPGuard
       @imap.close
     end
 
+    # Disconnects from the server.
+    def disconnect
+      @imap.disconnect
+    end
+
   private
 
     def process query, operation
