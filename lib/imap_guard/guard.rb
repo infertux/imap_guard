@@ -30,7 +30,7 @@ module IMAPGuard
     def move query, mailbox, &filter
       operation = lambda { |message_id|
         @imap.copy(message_id, mailbox) unless @settings.read_only
-        @imap.store(message_id, "+FLAGS", [:Deleted])
+        @imap.store(message_id, "+FLAGS", [Net::IMAP::DELETED])
         "moved to #{mailbox}".cyan
       }
       process query, operation, &filter
@@ -38,7 +38,7 @@ module IMAPGuard
 
     def delete query, &filter
       operation = lambda { |message_id|
-        @imap.store(message_id, "+FLAGS", [:Deleted])
+        @imap.store(message_id, "+FLAGS", [Net::IMAP::DELETED])
         'deleted'.red
       }
       process query, operation, &filter
