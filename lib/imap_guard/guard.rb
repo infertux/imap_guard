@@ -50,12 +50,16 @@ module IMAPGuard
       process query, operation, &filter
     end
 
+    # Sends a EXPUNGE command to permanently remove from the currently selected
+    # mailbox all messages that have the Deleted flag set.
     def expunge
       @imap.expunge unless @settings.read_only
     end
 
+    # Sends a CLOSE command to close the currently selected mailbox. The CLOSE
+    # command permanently removes from the mailbox all messages that have the
+    # Deleted flag set.
     def close
-      puts "Expunging deleted messages and closing mailbox..."
       @imap.close
     end
 
