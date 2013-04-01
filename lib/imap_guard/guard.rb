@@ -75,7 +75,7 @@ module IMAPGuard
       count = message_ids.size
 
       message_ids.each_with_index do |message_id, index|
-        print "Processing UID #{message_id} (#{index + 1}/#{count}): "
+        print "Processing UID #{message_id} (#{index.succ}/#{count}): "
 
         result = true
         if block_given?
@@ -102,7 +102,7 @@ module IMAPGuard
 
     def search query
       unless [Array, String].any? { |type| query.is_a? type }
-        raise ArgumentError, "query must be either a string holding the entire search string, or a single-dimension array of search keywords and arguments"
+        raise TypeError, "query must be either a string holding the entire search string, or a single-dimension array of search keywords and arguments"
       end
 
       messages = @imap.search query
@@ -117,7 +117,7 @@ module IMAPGuard
       else
         # anonymous null object
         Class.new do
-          def method_missing(*args, &block)
+          def method_missing(*)
             nil
           end
         end.new
