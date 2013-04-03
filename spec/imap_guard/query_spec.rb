@@ -41,6 +41,13 @@ module IMAPGuard
       end
     end
 
+    describe "#to" do
+      it "adds the search value" do
+        subject.to("root@example.net")
+        subject.last.should eq "root@example.net"
+      end
+    end
+
     describe "#before" do
       context "when I pass 'nil' as an argument" do
         it "raises" do

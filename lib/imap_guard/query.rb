@@ -20,6 +20,10 @@ module IMAPGuard
       self << 'FROM' << string
     end
 
+    def to string
+      self << 'TO' << string
+    end
+
     def before date
       case date
       when String
