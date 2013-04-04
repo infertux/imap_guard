@@ -6,6 +6,12 @@ require 'colored'
 module IMAPGuard
   # Guard allows you to process your mailboxes.
   class Guard
+    # List of required settings
+    REQUIRED_SETTINGS = [:host, :port, :username, :password]
+
+    # List of optional settings
+    OPTIONAL_SETTINGS = [:read_only, :verbose]
+
     # [Proc] Matched emails are passed to this debug lambda if present
     attr_accessor :debug
 
@@ -161,12 +167,10 @@ module IMAPGuard
     end
 
     def settings= settings
-      required = %w(host port username password).map!(&:to_sym)
-      missing = required - settings.keys
+      missing = REQUIRED_SETTINGS - settings.keys
       raise ArgumentError, "Missing settings: #{missing}" unless missing.empty?
 
-      optional = %w(read_only verbose).map!(&:to_sym)
-      unknown = settings.keys - required - optional
+      unknown = settings.keys - REQUIRED_SETTINGS - OPTIONAL_SETTINGS
       raise ArgumentError, "Unknown settings: #{unknown}" unless unknown.empty?
 
       @settings = OpenStruct.new(settings).freeze
