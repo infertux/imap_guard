@@ -132,8 +132,9 @@ module IMAPGuard
       expunge
     end
 
+    # @note We use "BODY.PEEK[]" to avoid setting the \Seen flag.
     def fetch_mail message_id
-      msg = @imap.fetch(message_id, 'RFC822')[0].attr['RFC822']
+      msg = @imap.fetch(message_id, 'BODY.PEEK[]').first.attr['BODY[]']
       Mail.read_from_string msg
     end
 
