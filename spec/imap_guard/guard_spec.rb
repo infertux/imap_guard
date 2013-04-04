@@ -6,6 +6,10 @@ module IMAPGuard
       $stdout = StringIO.new # mute stdout - comment to debug
     end
 
+    after do
+      $stdout = STDOUT
+    end
+
     let(:settings) do
       {
         host: 'localhost',
