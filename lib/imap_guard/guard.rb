@@ -6,6 +6,9 @@ require 'colored'
 module IMAPGuard
   # Guard allows you to process your mailboxes.
   class Guard
+    # [Proc] Matched emails are passed to this debug lambda if present
+    attr_accessor :debug
+
     # @return [OpenStruct] IMAPGuard settings
     attr_reader :settings
 
@@ -105,10 +108,17 @@ module IMAPGuard
         print "Processing UID #{message_id} (#{index.succ}/#{count}): "
 
         result = true
-        if block_given?
+        if block_given? or debug
           mail = fetch_mail message_id
-          result = yield(mail)
-          verbose.print "(given filter result: #{result.inspect}) "
+
+          if debug
+            debug.call(mail)
+          end
+
+          if block_given?
+            result = yield(mail)
+            verbose.print "(given filter result: #{result.inspect}) "
+          end
         end
 
         if result
