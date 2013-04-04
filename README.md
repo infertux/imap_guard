@@ -32,16 +32,16 @@ SETTINGS = {
   read_only: true # don't perform any modification aka dry-run mode
 }
 
-guard = IMAPGuard::Guard.new SETTINGS
+guard = ImapGuard::Guard.new SETTINGS
 guard.login # authenticate the user
 guard.select 'INBOX.ops' # select the mailbox
 ```
 
 IMAP search query syntax can be a bit tricky.
-`IMAPGuard::Query` can help you to build queries with a simple Ruby DSL:
+`ImapGuard::Query` can help you to build queries with a simple Ruby DSL:
 
 ```ruby
-base_query = IMAPGuard::Query.new.unflagged.unanswered.seen.freeze
+base_query = ImapGuard::Query.new.unflagged.unanswered.seen.freeze
 query = base_query.dup.before(7).subject("abc").from("root")
 p query #=> ["UNFLAGGED", "UNANSWERED", "SEEN", "BEFORE", "13-Mar-2013", "SUBJECT", "abc", "FROM", "root"]
 guard.delete query # will delete every emails which match this query

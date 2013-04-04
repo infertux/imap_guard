@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module IMAPGuard
+module ImapGuard
   describe Query do
     describe "#initialize" do
       it { should be_empty }

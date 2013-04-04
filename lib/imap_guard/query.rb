@@ -1,4 +1,4 @@
-module IMAPGuard
+module ImapGuard
   # Query is a neat DSL to help you generate IMAP search queries.
   # @note All methods return self so they can be chained.
   class Query < Array

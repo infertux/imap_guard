@@ -3,7 +3,7 @@ require 'ostruct'
 require 'mail'
 require 'colored'
 
-module IMAPGuard
+module ImapGuard
   # Guard allows you to process your mailboxes.
   class Guard
     # List of required settings
@@ -16,7 +16,7 @@ module IMAPGuard
     attr_accessor :debug
 
     # @note The settings are frozen
-    # @return [OpenStruct] IMAPGuard settings
+    # @return [OpenStruct] ImapGuard settings
     attr_reader :settings
 
     # @return [String, nil] Currently selected mailbox

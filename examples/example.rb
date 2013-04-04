@@ -10,8 +10,8 @@ SETTINGS = {
 }
 
 settings = SETTINGS.merge({ read_only: false })
-base_query = IMAPGuard::Query.new.unflagged.unanswered.freeze
-guard = IMAPGuard::Guard.new settings
+base_query = ImapGuard::Query.new.unflagged.unanswered.freeze
+guard = ImapGuard::Guard.new settings
 # guard.debug = ->(mail) { print "#{mail.subject}: " }
 guard.login
 

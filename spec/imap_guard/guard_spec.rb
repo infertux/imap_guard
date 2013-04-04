@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module IMAPGuard
+module ImapGuard
   describe Guard do
     before do
       $stdout = StringIO.new # mute stdout - comment to debug
