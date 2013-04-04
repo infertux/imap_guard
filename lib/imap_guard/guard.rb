@@ -86,7 +86,7 @@ module IMAPGuard
     # Deleted flag set.
     # @return [void]
     def close
-      @imap.close
+      @imap.close unless @settings.read_only
     end
 
     # Disconnects from the server.
