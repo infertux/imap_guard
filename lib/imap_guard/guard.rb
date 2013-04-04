@@ -51,6 +51,11 @@ module IMAPGuard
       process query, operation, &filter
     end
 
+    # @return [Array] Sorted list of all mailboxes
+    def list
+      @imap.list("", "*").map(&:name).sort
+    end
+
     # Sends a EXPUNGE command to permanently remove from the currently selected
     # mailbox all messages that have the Deleted flag set.
     def expunge

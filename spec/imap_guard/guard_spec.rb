@@ -16,7 +16,7 @@ module IMAPGuard
     end
 
     let(:imap) {
-      double('Net::IMAP', search: [7, 28], expunge: nil, select: nil)
+      double('Net::IMAP', search: [7, 28], expunge: nil, select: nil, list: [])
     }
 
     def guard_instance custom_settings = {}
@@ -56,6 +56,13 @@ module IMAPGuard
 
         guard.select 'Sent'
         guard.mailbox.should eq 'Sent'
+      end
+    end
+
+    describe "#list" do
+      it "returns the list of mailboxes" do
+        imap.should_receive(:list)
+        guard_instance.list.should eq []
       end
     end
 
