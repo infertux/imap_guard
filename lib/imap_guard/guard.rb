@@ -5,7 +5,7 @@ require 'colored'
 
 module IMAPGuard
   class Guard
-    attr_reader :settings
+    attr_reader :settings, :mailbox
 
     def initialize settings
       self.settings = settings
@@ -24,6 +24,7 @@ module IMAPGuard
       else
         @imap.select(mailbox) # open in read-write
       end
+      @mailbox = mailbox
     end
 
     # @param mailbox Destination mailbox
@@ -106,7 +107,7 @@ module IMAPGuard
       end
 
       messages = @imap.search query
-      puts "Query: #{query.inspect}: #{messages.count} results".cyan
+      puts "Query on #{mailbox}: #{query.inspect}: #{messages.count} results".cyan
 
       messages
     end
