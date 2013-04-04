@@ -16,6 +16,9 @@ It can be used by a disposable script to clean things up or with a cron job to k
 
 ## Usage
 
+Read below for detailed explanations.
+If you prefer a quick overview, you can take a look at [this example](https://github.com/infertux/imap_guard/blob/master/examples/example.rb).
+
 Example initialization:
 
 ```ruby
