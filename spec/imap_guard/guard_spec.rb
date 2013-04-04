@@ -108,6 +108,16 @@ module IMAPGuard
 
           guard.send(:process, 'ALL', opeartion)
         end
+
+        context "with a debug proc" do
+          it "calls the proc" do
+            block = ->(mail) {}
+            guard.debug = block
+            block.should_receive(:call).twice
+
+            guard.send(:process, 'ALL', opeartion)
+          end
+        end
       end
 
       context "with a filter block" do

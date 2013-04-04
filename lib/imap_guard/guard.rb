@@ -111,9 +111,7 @@ module IMAPGuard
         if block_given? or debug
           mail = fetch_mail message_id
 
-          if debug
-            debug.call(mail)
-          end
+          debug.call(mail) if debug
 
           if block_given?
             result = yield(mail)
