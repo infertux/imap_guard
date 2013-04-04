@@ -4,20 +4,30 @@ require 'mail'
 require 'colored'
 
 module IMAPGuard
+  # Guard allows you to process your mailboxes.
   class Guard
-    attr_reader :settings, :mailbox
+    # @return [OpenStruct] IMAPGuard settings
+    attr_reader :settings
+
+    # @return [String] Currently selected mailbox
+    attr_reader :mailbox
 
     def initialize settings
       self.settings = settings
     end
 
+    # Authenticates to the given IMAP server
     # @see http://www.ruby-doc.org/stdlib-1.9.3/libdoc/net/imap/rdoc/Net/IMAP.html#method-c-new
+    # @return [void]
     def login
       @imap = Net::IMAP.new(@settings.host, @settings.port, true, nil, false)
       @imap.login(@settings.username, @settings.password)
       verbose.puts "Logged in successfully"
     end
 
+    # Selects a mailbox (folder)
+    # @see {settings.read_only}
+    # @return [void]
     def select mailbox
       if @settings.read_only
         @imap.examine(mailbox) # open in read-only
@@ -27,7 +37,11 @@ module IMAPGuard
       @mailbox = mailbox
     end
 
+    # Moves messages matching the query and filter block
+    # @param query IMAP query
     # @param mailbox Destination mailbox
+    # @param filter Optional filter block
+    # @return [void]
     def move query, mailbox, &filter
       operation = lambda { |message_id|
         unless @settings.read_only
@@ -40,6 +54,10 @@ module IMAPGuard
       process query, operation, &filter
     end
 
+    # Deletes messages matching the query and filter block
+    # @param query IMAP query
+    # @param filter Optional filter block
+    # @return [void]
     def delete query, &filter
       operation = lambda { |message_id|
         unless @settings.read_only
@@ -58,6 +76,7 @@ module IMAPGuard
 
     # Sends a EXPUNGE command to permanently remove from the currently selected
     # mailbox all messages that have the Deleted flag set.
+    # @return [void]
     def expunge
       @imap.expunge unless @settings.read_only
     end
@@ -65,11 +84,13 @@ module IMAPGuard
     # Sends a CLOSE command to close the currently selected mailbox. The CLOSE
     # command permanently removes from the mailbox all messages that have the
     # Deleted flag set.
+    # @return [void]
     def close
       @imap.close
     end
 
     # Disconnects from the server.
+    # @return [void]
     def disconnect
       @imap.disconnect
     end

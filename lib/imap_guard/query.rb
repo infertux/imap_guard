@@ -1,4 +1,5 @@
 module IMAPGuard
+  # Query is a neat DSL to help you generate IMAP search queries.
   class Query < Array
     def seen
       self << 'SEEN'
@@ -24,6 +25,12 @@ module IMAPGuard
       self << 'TO' << string
     end
 
+    # Adds a `BEFORE date` condition
+    # @param date Depending of its type:
+    #   - String: uses it as is
+    #   - Fixnum: _n_ days before today
+    #   - Date: uses this date
+    # @return [Query] self
     def before date
       case date
       when String
