@@ -12,13 +12,14 @@ module IMAPGuard
     # List of optional settings
     OPTIONAL_SETTINGS = [:read_only, :verbose]
 
-    # [Proc] Matched emails are passed to this debug lambda if present
+    # @return [Proc, nil] Matched emails are passed to this debug lambda if present
     attr_accessor :debug
 
+    # @note The settings are frozen
     # @return [OpenStruct] IMAPGuard settings
     attr_reader :settings
 
-    # @return [String] Currently selected mailbox
+    # @return [String, nil] Currently selected mailbox
     attr_reader :mailbox
 
     def initialize settings
@@ -35,7 +36,6 @@ module IMAPGuard
     end
 
     # Selects a mailbox (folder)
-    # @see {settings.read_only}
     # @return [void]
     def select mailbox
       if @settings.read_only
@@ -78,7 +78,7 @@ module IMAPGuard
       process query, operation, &filter
     end
 
-    # @return [Array] Sorted list of all mailboxes
+    # @return [Array<String>] Sorted list of all mailboxes
     def list
       @imap.list("", "*").map(&:name).sort
     end
