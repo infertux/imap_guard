@@ -49,7 +49,7 @@ module IMAPGuard
           @imap.store(message_id, "+FLAGS", [Net::IMAP::DELETED])
         end
 
-        "moved to #{mailbox}".cyan
+        "moved to #{mailbox}".yellow
       }
       process query, operation, &filter
     end
@@ -114,7 +114,7 @@ module IMAPGuard
         if result
           puts operation.call(message_id)
         else
-          puts "ignored".yellow
+          puts "ignored".green
         end
       end
 
