@@ -13,6 +13,10 @@ module IMAPGuard
       self << 'UNFLAGGED'
     end
 
+    def or
+      self << 'OR'
+    end
+
     def subject string
       self << 'SUBJECT' << string
     end
