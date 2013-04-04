@@ -1,35 +1,55 @@
 module IMAPGuard
   # Query is a neat DSL to help you generate IMAP search queries.
   class Query < Array
+    # Messages that have the \Seen flag set.
+    # @return [Query] self
     def seen
       self << 'SEEN'
     end
 
+    # Messages that do not have the \Answered flag set.
+    # @return [Query] self
     def unanswered
       self << 'UNANSWERED'
     end
 
+    # Messages that do not have the \Flagged flag set.
+    # @return [Query] self
     def unflagged
       self << 'UNFLAGGED'
     end
 
+    # Messages that match either search key.
+    # @note Reverse polish notation is expected,
+    #   i.e. OR <search-key1> <search-key2>
+    # @return [Query] self
     def or
       self << 'OR'
     end
 
+    # Messages that contain the specified string in the envelope
+    # structure's SUBJECT field.
+    # @return [Query] self
     def subject string
       self << 'SUBJECT' << string
     end
 
+    # Messages that contain the specified string in the envelope
+    # structure's FROM field.
+    # @return [Query] self
     def from string
       self << 'FROM' << string
     end
 
+    # Messages that contain the specified string in the envelope
+    # structure's TO field.
+    # @return [Query] self
     def to string
       self << 'TO' << string
     end
 
-    # Adds a `BEFORE date` condition
+    # Messages whose internal date (disregarding time and timezone)
+    # is earlier than the specified date.
     # @param date Depending of its type:
     #   - String: uses it as is
     #   - Fixnum: _n_ days before today
