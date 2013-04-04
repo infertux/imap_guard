@@ -27,6 +27,13 @@ module IMAPGuard
       end
     end
 
+    describe "#or" do
+      it "adds 'OR'" do
+        subject.or
+        subject.last.should eq 'OR'
+      end
+    end
+
     describe "#subject" do
       it "adds the search value" do
         subject.subject("Hey you")
