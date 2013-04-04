@@ -49,7 +49,7 @@ For instance, the pattern passed to `subject` and `from` is a mere string.
 IMAP doesn't allow advanced filtering such as regexp matching.
 
 To do so, you can pass an optional block to `delete`.
-The yielded object is a [Mail](https://github.com/mikel/mail) instance of the current mail providing many methods.
+The yielded object is a [Mail] instance of the current mail providing many methods.
 However, wrapping the mail into a nice `Mail` object is slow and you should avoid to use it if you can.
 
 ```ruby
@@ -84,6 +84,36 @@ guard.move query, 'destination_folder' do |mail|
 end
 ```
 
+### Advanced features
+
+#### Mailbox list
+
+You can list all mailboxes:
+
+```ruby
+p guard.list
+```
+
+#### Selected mailbox
+
+You can output the currently selected mailbox:
+
+```ruby
+p guard.mailbox # nil if none has been selected
+```
+
+#### Debug block
+
+You can pass a block which will be yielded for each matched email:
+
+```ruby
+# Print out the subject for each email
+guard.debug = ->(mail) { print "#{mail.subject}: " }
+```
+
+You can think of it as Ruby's [Object#tap](http://ruby-doc.org/core-2.0/Object.html#method-i-tap) method.
+Note this is slow since it needs to fetch the whole email to return a [Mail] object.
+
 ## Contributing
 
 Bug reports and patches are most welcome.
@@ -91,4 +121,7 @@ Bug reports and patches are most welcome.
 ## License
 
 MIT
+
+
+[Mail]: https://github.com/mikel/mail
 
