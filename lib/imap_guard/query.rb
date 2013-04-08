@@ -97,7 +97,7 @@ module ImapGuard
       when Date
         date = date.strftime '%e-%b-%Y'
       else
-        raise ArgumentError, "#{date.inspect} is invalid"
+        raise ArgumentError, "#{date.inspect} is invalid."
       end
 
       self << 'BEFORE' << date

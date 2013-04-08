@@ -144,7 +144,7 @@ module ImapGuard
 
     def search query
       unless [Array, String].any? { |type| query.is_a? type }
-        raise TypeError, "query must be either a string holding the entire search string, or a single-dimension array of search keywords and arguments"
+        raise TypeError, "Query must be either a string holding the entire search string, or a single-dimension array of search keywords and arguments."
       end
 
       messages = @imap.search query
