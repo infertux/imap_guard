@@ -27,11 +27,25 @@ module ImapGuard
     end
 
     # Messages that match either search key.
+    # @param search_key1 Optional search key to pass to +OR+
+    # @param search_key2 Optional search key to pass to +OR+
     # @note Reverse polish notation is expected,
     #   i.e. OR <search-key1> <search-key2>
+    # @example
+    #   or.unanswered.unflagged     #=> ["OR", "UNANSWERED", "UNFLAGGED"]
+    #   or(:unanswered, :unflagged) #=> ["OR", "UNANSWERED", "UNFLAGGED"]
     # @return [self]
-    def or
+    def or search_key1 = nil, search_key2 = nil
       self << 'OR'
+
+      if search_key1 and search_key2
+        send(search_key1)
+        send(search_key2)
+      elsif search_key1 or search_key2
+        raise ArgumentError, "You must give either zero or two arguments."
+      end
+
+      self
     end
 
     # Messages that do not match the specified search key.

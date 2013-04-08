@@ -35,9 +35,30 @@ module ImapGuard
     end
 
     describe "#or" do
-      it "adds 'OR'" do
-        subject.or
-        subject.last.should eq 'OR'
+      context "without a search key" do
+        it "adds 'OR'" do
+          subject.or
+          subject.last.should eq 'OR'
+        end
+      end
+
+      context "with search keys" do
+        it "adds 'OR UNANSWERED UNFLAGGED '" do
+          subject.or(:unanswered, :unflagged)
+          subject.last(3).should eq ["OR", "UNANSWERED", "UNFLAGGED"]
+        end
+      end
+
+      context "with only one non-nil search key" do
+        it "raises ArgumentError" do
+          expect {
+            subject.or(:whatever)
+          }.to raise_error(ArgumentError)
+
+          expect {
+            subject.or(nil, :whatever)
+          }.to raise_error(ArgumentError)
+        end
       end
     end
 
