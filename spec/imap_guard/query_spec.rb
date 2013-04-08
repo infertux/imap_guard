@@ -27,6 +27,13 @@ module ImapGuard
       end
     end
 
+    describe "#deleted" do
+      it "adds 'DELETED'" do
+        subject.deleted
+        subject.last.should eq 'DELETED'
+      end
+    end
+
     describe "#or" do
       it "adds 'OR'" do
         subject.or
@@ -52,6 +59,22 @@ module ImapGuard
       it "adds the search value" do
         subject.to("root@example.net")
         subject.last.should eq "root@example.net"
+      end
+    end
+
+    describe "#not" do
+      context "without a search key" do
+        it "adds 'NOT'" do
+          subject.not.deleted
+          subject.last(2).should eq ["NOT", "DELETED"]
+        end
+      end
+
+      context "with a search key" do
+        it "adds 'NOT DELETED'" do
+          subject.not(:deleted)
+          subject.last(2).should eq ["NOT", "DELETED"]
+        end
       end
     end
 

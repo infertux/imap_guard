@@ -2,22 +2,28 @@ module ImapGuard
   # Query is a neat DSL to help you generate IMAP search queries.
   # @note All methods return self so they can be chained.
   class Query < Array
-    # Messages that have the \Seen flag set.
+    # Messages that have the +\Seen+ flag set.
     # @return [self]
     def seen
       self << 'SEEN'
     end
 
-    # Messages that do not have the \Answered flag set.
+    # Messages that do not have the +\Answered+ flag set.
     # @return [self]
     def unanswered
       self << 'UNANSWERED'
     end
 
-    # Messages that do not have the \Flagged flag set.
+    # Messages that do not have the +\Flagged+ flag set.
     # @return [self]
     def unflagged
       self << 'UNFLAGGED'
+    end
+
+    # Messages with the +\Deleted+ flag set.
+    # @return [self]
+    def deleted
+      self << 'DELETED'
     end
 
     # Messages that match either search key.
@@ -26,6 +32,18 @@ module ImapGuard
     # @return [self]
     def or
       self << 'OR'
+    end
+
+    # Messages that do not match the specified search key.
+    # @param search_key Optional search key to pass to +NOT+
+    # @example
+    #   not.deleted   #=> ["NOT", "DELETED"]
+    #   not(:deleted) #=> ["NOT", "DELETED"]
+    # @return [self]
+    def not search_key = nil
+      self << 'NOT'
+      send(search_key) if search_key
+      self
     end
 
     # Messages that contain the specified string in the envelope
