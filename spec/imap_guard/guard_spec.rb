@@ -216,9 +216,11 @@ module ImapGuard
       it "freezes the settings" do
         guard = Guard.new(settings)
 
+        exception = (RUBY_VERSION >= "2.1.0" ? RuntimeError : TypeError)
+
         expect {
           guard.settings.host = 'example.net'
-        }.to raise_error(TypeError, /frozen/)
+        }.to raise_error(exception, /frozen/)
       end
 
       it "raises ArgumentError if any required key is missing" do
