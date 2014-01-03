@@ -3,6 +3,7 @@ require 'ostruct'
 require 'mail'
 require 'term/ansicolor'
 String.send(:include, Term::ANSIColor)
+Term::ANSIColor::coloring = STDOUT.isatty
 
 module ImapGuard
   # Guard allows you to process your mailboxes.
