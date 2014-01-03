@@ -1,7 +1,8 @@
 require 'net/imap'
 require 'ostruct'
 require 'mail'
-require 'colored'
+require 'term/ansicolor'
+String.send(:include, Term::ANSIColor)
 
 module ImapGuard
   # Guard allows you to process your mailboxes.
@@ -174,7 +175,7 @@ module ImapGuard
       raise ArgumentError, "Unknown settings: #{unknown}" unless unknown.empty?
 
       @settings = OpenStruct.new(settings).freeze
-      puts "DRY-RUN MODE ENABLED".yellow.bold.reversed if @settings.read_only
+      puts "DRY-RUN MODE ENABLED".yellow.bold.negative if @settings.read_only
     end
   end
 end
