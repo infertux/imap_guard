@@ -8,6 +8,12 @@ module ImapGuard
       self << 'SEEN'
     end
 
+    # Messages that do not have the +\Seen+ flag set.
+    # @return [self]
+    def unseen
+      self << 'UNSEEN'
+    end
+
     # Messages that do not have the +\Answered+ flag set.
     # @return [self]
     def unanswered

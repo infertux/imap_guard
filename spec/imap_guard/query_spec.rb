@@ -13,6 +13,13 @@ module ImapGuard
       end
     end
 
+    describe "#unseen" do
+      it "adds 'UNSEEN'" do
+        subject.unseen
+        subject.last.should eq 'UNSEEN'
+      end
+    end
+
     describe "#unanswered" do
       it "adds 'UNANSWERED'" do
         subject.unanswered
