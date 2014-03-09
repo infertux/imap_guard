@@ -127,11 +127,7 @@ module ImapGuard
           end
         end
 
-        if result
-          puts operation.call(message_id)
-        else
-          puts "ignored".green
-        end
+        puts result ? operation.call(message_id) : "ignored".green
       end
 
     ensure
