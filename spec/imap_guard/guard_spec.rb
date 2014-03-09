@@ -171,6 +171,14 @@ module ImapGuard
       end
     end
 
+    describe "#each" do
+      it "iterates over messages without errors" do
+        guard_instance.each 'ALL' do |message_id|
+          # noop
+        end
+      end
+    end
+
     describe "#expunge" do
       it "expunges the folder" do
         imap.should_receive(:expunge)

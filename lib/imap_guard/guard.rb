@@ -80,6 +80,23 @@ module ImapGuard
       process query, operation, &filter
     end
 
+    # Runs operation on messages matching the query
+    # @param query IMAP query
+    # @param opration Lambda to call on each message
+    # @return [void]
+    def each query
+      operation = lambda { |message_id| yield message_id }
+      process query, operation
+    end
+
+    # Fetches a message from its UID
+    # @return [Mail]
+    # @note We use "BODY.PEEK[]" to avoid setting the \Seen flag.
+    def fetch_mail message_id
+      msg = @imap.fetch(message_id, 'BODY.PEEK[]').first.attr['BODY[]']
+      Mail.read_from_string msg
+    end
+
     # @return [Array<String>] Sorted list of all mailboxes
     def list
       @imap.list("", "*").map(&:name).sort
@@ -132,12 +149,6 @@ module ImapGuard
 
     ensure
       expunge
-    end
-
-    # @note We use "BODY.PEEK[]" to avoid setting the \Seen flag.
-    def fetch_mail message_id
-      msg = @imap.fetch(message_id, 'BODY.PEEK[]').first.attr['BODY[]']
-      Mail.read_from_string msg
     end
 
     def search query
