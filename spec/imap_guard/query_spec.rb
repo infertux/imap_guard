@@ -90,6 +90,13 @@ module ImapGuard
       end
     end
 
+    describe "#cc" do
+      it "adds the search value" do
+        subject.cc("root@example.net")
+        subject.last.should eq "root@example.net"
+      end
+    end
+
     describe "#not" do
       context "without a search key" do
         it "adds 'NOT'" do

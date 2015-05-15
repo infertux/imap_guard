@@ -87,6 +87,13 @@ module ImapGuard
       self << 'TO' << string
     end
 
+    # Messages that contain the specified string in the envelope
+    # structure's CC field.
+    # @return [self]
+    def cc string
+      self << 'CC' << string
+    end
+
     # Messages whose internal date (disregarding time and timezone)
     # is earlier than the specified date.
     # @param date Depending of its type:
