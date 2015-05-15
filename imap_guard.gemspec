@@ -1,11 +1,10 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'imap_guard/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "imap_guard"
-  spec.version       = ImapGuard::VERSION
+  spec.version       = "1.0.0"
   spec.authors       = ["Cédric Félizard"]
   spec.email         = ["cedric@felizard.fr"]
   spec.description   = %q{A guard for your IMAP server}
