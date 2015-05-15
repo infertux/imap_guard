@@ -13,7 +13,3 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: rbx
-notifications:
-  email:
-    on_success: always
-    on_failure: always
