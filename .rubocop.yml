@@ -1,0 +1,17 @@
+Metrics:
+  Enabled: false
+
+Style/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+Style/SafeNavigation:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: comma

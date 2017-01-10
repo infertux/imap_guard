@@ -1,18 +1,21 @@
-require 'net/imap'
-require 'ostruct'
-require 'mail'
-require 'term/ansicolor'
+# frozen_string_literal: true
+
+require "net/imap"
+require "ostruct"
+require "mail"
+require "term/ansicolor"
+
 String.send(:include, Term::ANSIColor)
-Term::ANSIColor::coloring = STDOUT.isatty
+Term::ANSIColor.coloring = STDOUT.isatty
 
 module ImapGuard
   # Guard allows you to process your mailboxes.
   class Guard
     # List of required settings
-    REQUIRED_SETTINGS = [:host, :port, :username, :password]
+    REQUIRED_SETTINGS = [:host, :port, :username, :password].freeze
 
     # List of optional settings
-    OPTIONAL_SETTINGS = [:read_only, :verbose]
+    OPTIONAL_SETTINGS = [:read_only, :verbose].freeze
 
     # @return [Proc, nil] Matched emails are passed to this debug lambda if present
     attr_accessor :debug
@@ -24,7 +27,7 @@ module ImapGuard
     # @return [String, nil] Currently selected mailbox
     attr_reader :mailbox
 
-    def initialize settings
+    def initialize(settings)
       self.settings = settings
     end
 
@@ -39,7 +42,7 @@ module ImapGuard
 
     # Selects a mailbox (folder)
     # @return [void]
-    def select mailbox
+    def select(mailbox)
       if @settings.read_only
         @imap.examine(mailbox) # open in read-only
       else
@@ -53,15 +56,15 @@ module ImapGuard
     # @param mailbox Destination mailbox
     # @param filter Optional filter block
     # @return [void]
-    def move query, mailbox, &filter
-      operation = lambda { |message_id|
+    def move(query, mailbox, &filter)
+      operation = lambda do |message_id|
         unless @settings.read_only
           @imap.copy(message_id, mailbox)
           @imap.store(message_id, "+FLAGS", [Net::IMAP::DELETED])
         end
 
         "moved to #{mailbox}".yellow
-      }
+      end
       process query, operation, &filter
     end
 
@@ -69,14 +72,14 @@ module ImapGuard
     # @param query IMAP query
     # @param filter Optional filter block
     # @return [void]
-    def delete query, &filter
-      operation = lambda { |message_id|
+    def delete(query, &filter)
+      operation = lambda do |message_id|
         unless @settings.read_only
           @imap.store(message_id, "+FLAGS", [Net::IMAP::DELETED])
         end
 
-        'deleted'.red
-      }
+        "deleted".red
+      end
       process query, operation, &filter
     end
 
@@ -84,16 +87,16 @@ module ImapGuard
     # @param query IMAP query
     # @param opration Lambda to call on each message
     # @return [void]
-    def each query
-      operation = lambda { |message_id| yield message_id }
+    def each(query)
+      operation = ->(message_id) { yield message_id }
       process query, operation
     end
 
     # Fetches a message from its UID
     # @return [Mail]
     # @note We use "BODY.PEEK[]" to avoid setting the \Seen flag.
-    def fetch_mail message_id
-      msg = @imap.fetch(message_id, 'BODY.PEEK[]').first.attr['BODY[]']
+    def fetch_mail(message_id)
+      msg = @imap.fetch(message_id, "BODY.PEEK[]").first.attr["BODY[]"]
       Mail.read_from_string msg
     end
 
@@ -125,7 +128,7 @@ module ImapGuard
 
   private
 
-    def process query, operation
+    def process(query, operation)
       message_ids = search query
       count = message_ids.size
 
@@ -133,7 +136,7 @@ module ImapGuard
         print "Processing UID #{message_id} (#{index.succ}/#{count}): "
 
         result = true
-        if block_given? or debug
+        if block_given? || debug
           mail = fetch_mail message_id
 
           debug.call(mail) if debug
@@ -151,7 +154,7 @@ module ImapGuard
       expunge
     end
 
-    def search query
+    def search(query)
       unless [Array, String].any? { |type| query.is_a? type }
         raise TypeError, "Query must be either a string holding the entire search string, or a single-dimension array of search keywords and arguments."
       end
@@ -164,18 +167,16 @@ module ImapGuard
 
     def verbose
       @verbose ||= if @settings.verbose
-        $stdout
-      else
-        # anonymous null object
-        Class.new do
-          def method_missing(*)
-            nil
-          end
-        end.new
-      end
+                     $stdout
+                   else
+                     # anonymous null object
+                     # rubocop:disable all
+                     Class.new do def method_missing(*); nil end end.new
+                     # rubocop:enable all
+                   end
     end
 
-    def settings= settings
+    def settings=(settings)
       missing = REQUIRED_SETTINGS - settings.keys
       raise ArgumentError, "Missing settings: #{missing}" unless missing.empty?
 
@@ -187,4 +188,3 @@ module ImapGuard
     end
   end
 end
-

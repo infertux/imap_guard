@@ -1,4 +1,4 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
 module ImapGuard
   describe Query do
@@ -9,35 +9,35 @@ module ImapGuard
     describe "#seen" do
       it "adds 'SEEN'" do
         subject.seen
-        subject.last.should eq 'SEEN'
+        subject.last.should eq "SEEN"
       end
     end
 
     describe "#unseen" do
       it "adds 'UNSEEN'" do
         subject.unseen
-        subject.last.should eq 'UNSEEN'
+        subject.last.should eq "UNSEEN"
       end
     end
 
     describe "#unanswered" do
       it "adds 'UNANSWERED'" do
         subject.unanswered
-        subject.last.should eq 'UNANSWERED'
+        subject.last.should eq "UNANSWERED"
       end
     end
 
     describe "#unflagged" do
       it "adds 'UNFLAGGED'" do
         subject.unflagged
-        subject.last.should eq 'UNFLAGGED'
+        subject.last.should eq "UNFLAGGED"
       end
     end
 
     describe "#deleted" do
       it "adds 'DELETED'" do
         subject.deleted
-        subject.last.should eq 'DELETED'
+        subject.last.should eq "DELETED"
       end
     end
 
@@ -45,26 +45,26 @@ module ImapGuard
       context "without a search key" do
         it "adds 'OR'" do
           subject.or
-          subject.last.should eq 'OR'
+          subject.last.should eq "OR"
         end
       end
 
       context "with search keys" do
         it "adds 'OR UNANSWERED UNFLAGGED '" do
           subject.or(:unanswered, :unflagged)
-          subject.last(3).should eq ["OR", "UNANSWERED", "UNFLAGGED"]
+          subject.last(3).should eq %w(OR UNANSWERED UNFLAGGED)
         end
       end
 
       context "with only one non-nil search key" do
         it "raises ArgumentError" do
-          expect {
+          expect do
             subject.or(:whatever)
-          }.to raise_error(ArgumentError)
+          end.to raise_error(ArgumentError)
 
-          expect {
+          expect do
             subject.or(nil, :whatever)
-          }.to raise_error(ArgumentError)
+          end.to raise_error(ArgumentError)
         end
       end
     end
@@ -101,14 +101,14 @@ module ImapGuard
       context "without a search key" do
         it "adds 'NOT'" do
           subject.not.deleted
-          subject.last(2).should eq ["NOT", "DELETED"]
+          subject.last(2).should eq %w(NOT DELETED)
         end
       end
 
       context "with a search key" do
         it "adds 'NOT DELETED'" do
           subject.not(:deleted)
-          subject.last(2).should eq ["NOT", "DELETED"]
+          subject.last(2).should eq %w(NOT DELETED)
         end
       end
     end
@@ -116,9 +116,9 @@ module ImapGuard
     describe "#before" do
       context "when I pass 'nil' as an argument" do
         it "raises" do
-          expect {
+          expect do
             subject.before(nil)
-          }.to raise_error ArgumentError
+          end.to raise_error ArgumentError
         end
       end
 
@@ -138,8 +138,8 @@ module ImapGuard
 
       context "when I pass '18-Mar-2013' as an argument" do
         it "uses it as is" do
-          subject.before('18-Mar-2013')
-          subject.last.should eq '18-Mar-2013'
+          subject.before("18-Mar-2013")
+          subject.last.should eq "18-Mar-2013"
         end
       end
 
@@ -152,4 +152,3 @@ module ImapGuard
     end
   end
 end
-

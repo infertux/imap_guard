@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ImapGuard
   # Query is a neat DSL to help you generate IMAP search queries.
   # @note All methods return self so they can be chained.
@@ -5,31 +7,31 @@ module ImapGuard
     # Messages that have the +\Seen+ flag set.
     # @return [self]
     def seen
-      self << 'SEEN'
+      self << "SEEN"
     end
 
     # Messages that do not have the +\Seen+ flag set.
     # @return [self]
     def unseen
-      self << 'UNSEEN'
+      self << "UNSEEN"
     end
 
     # Messages that do not have the +\Answered+ flag set.
     # @return [self]
     def unanswered
-      self << 'UNANSWERED'
+      self << "UNANSWERED"
     end
 
     # Messages that do not have the +\Flagged+ flag set.
     # @return [self]
     def unflagged
-      self << 'UNFLAGGED'
+      self << "UNFLAGGED"
     end
 
     # Messages with the +\Deleted+ flag set.
     # @return [self]
     def deleted
-      self << 'DELETED'
+      self << "DELETED"
     end
 
     # Messages that match either search key.
@@ -41,13 +43,13 @@ module ImapGuard
     #   or.unanswered.unflagged     #=> ["OR", "UNANSWERED", "UNFLAGGED"]
     #   or(:unanswered, :unflagged) #=> ["OR", "UNANSWERED", "UNFLAGGED"]
     # @return [self]
-    def or search_key1 = nil, search_key2 = nil
-      self << 'OR'
+    def or(search_key1 = nil, search_key2 = nil)
+      self << "OR"
 
-      if search_key1 and search_key2
+      if search_key1 && search_key2
         send(search_key1)
         send(search_key2)
-      elsif search_key1 or search_key2
+      elsif search_key1 || search_key2
         raise ArgumentError, "You must give either zero or two arguments."
       end
 
@@ -60,8 +62,8 @@ module ImapGuard
     #   not.deleted   #=> ["NOT", "DELETED"]
     #   not(:deleted) #=> ["NOT", "DELETED"]
     # @return [self]
-    def not search_key = nil
-      self << 'NOT'
+    def not(search_key = nil)
+      self << "NOT"
       send(search_key) if search_key
       self
     end
@@ -69,29 +71,29 @@ module ImapGuard
     # Messages that contain the specified string in the envelope
     # structure's SUBJECT field.
     # @return [self]
-    def subject string
-      self << 'SUBJECT' << string
+    def subject(string)
+      self << "SUBJECT" << string
     end
 
     # Messages that contain the specified string in the envelope
     # structure's FROM field.
     # @return [self]
-    def from string
-      self << 'FROM' << string
+    def from(string)
+      self << "FROM" << string
     end
 
     # Messages that contain the specified string in the envelope
     # structure's TO field.
     # @return [self]
-    def to string
-      self << 'TO' << string
+    def to(string)
+      self << "TO" << string
     end
 
     # Messages that contain the specified string in the envelope
     # structure's CC field.
     # @return [self]
-    def cc string
-      self << 'CC' << string
+    def cc(string)
+      self << "CC" << string
     end
 
     # Messages whose internal date (disregarding time and timezone)
@@ -101,20 +103,19 @@ module ImapGuard
     #   - [Fixnum]: _n_ days before today
     #   - [Date]: uses this date
     # @return [self]
-    def before date
-      case date
-      when String
-        # noop, uses it as is
-      when Fixnum
-        date = (Date.today - date).strftime '%e-%b-%Y'
-      when Date
-        date = date.strftime '%e-%b-%Y'
-      else
-        raise ArgumentError, "#{date.inspect} is invalid."
-      end
+    def before(date)
+      date = case date
+             when String
+               date
+             when Integer
+               (Date.today - date).strftime "%e-%b-%Y"
+             when Date
+               date.strftime "%e-%b-%Y"
+             else
+               raise ArgumentError, "#{date.inspect} is invalid."
+             end
 
-      self << 'BEFORE' << date
+      self << "BEFORE" << date
     end
   end
 end
-

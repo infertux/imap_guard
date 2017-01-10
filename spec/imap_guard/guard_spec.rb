@@ -1,4 +1,4 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
 module ImapGuard
   describe Guard do
@@ -12,18 +12,18 @@ module ImapGuard
 
     let(:settings) do
       {
-        host: 'localhost',
+        host: "localhost",
         port: 993,
-        username: 'bob',
-        password: 'PASS',
+        username: "bob",
+        password: "PASS",
       }
     end
 
     let(:imap) do
-      double('Net::IMAP', search: [7, 28], expunge: nil, select: nil, list: [])
+      double("Net::IMAP", search: [7, 28], expunge: nil, select: nil, list: [])
     end
 
-    def guard_instance custom_settings = {}
+    def guard_instance(custom_settings = {})
       guard = Guard.new(settings.merge(custom_settings))
       guard.instance_variable_set(:@imap, imap)
       guard.stub(:fetch_mail)
@@ -58,8 +58,8 @@ module ImapGuard
       it "returns the currently selected mailbox" do
         guard = guard_instance
 
-        guard.select 'Sent'
-        guard.mailbox.should eq 'Sent'
+        guard.select "Sent"
+        guard.mailbox.should eq "Sent"
       end
     end
 
@@ -73,24 +73,24 @@ module ImapGuard
     describe "#search" do
       before do
         imap.should_receive(:search) do |arg|
-          [13, 37] if [['ALL'], 'ALL'].include? arg
+          [13, 37] if [["ALL"], "ALL"].include? arg
         end
       end
 
       it "accepts arrays" do
-        expect {
-          guard_instance.send(:search, ['ALL'])
-        }.to_not raise_error
+        expect do
+          guard_instance.send(:search, ["ALL"])
+        end.to_not raise_error
       end
 
       it "accepts strings" do
-        expect {
-          guard_instance.send(:search, 'ALL')
-        }.to_not raise_error
+        expect do
+          guard_instance.send(:search, "ALL")
+        end.to_not raise_error
       end
 
       it "returns results" do
-        messages = guard_instance.send(:search, 'ALL')
+        messages = guard_instance.send(:search, "ALL")
         messages.should eq [13, 37]
       end
     end
@@ -104,13 +104,13 @@ module ImapGuard
           opeartion.should_receive(:call).with(7)
           opeartion.should_receive(:call).with(28)
 
-          guard.send(:process, 'ALL', opeartion)
+          guard.send(:process, "ALL", opeartion)
         end
 
         it "does not execute the filter block" do
           guard.should_not_receive(:fetch_mail)
 
-          guard.send(:process, 'ALL', opeartion)
+          guard.send(:process, "ALL", opeartion)
         end
 
         context "with a debug proc" do
@@ -119,7 +119,7 @@ module ImapGuard
             guard.debug = block
             block.should_receive(:call).twice
 
-            guard.send(:process, 'ALL', opeartion)
+            guard.send(:process, "ALL", opeartion)
           end
         end
       end
@@ -128,14 +128,14 @@ module ImapGuard
         it "executes the filter block" do
           guard.should_receive(:fetch_mail).twice
 
-          guard.send(:process, 'ALL', opeartion) { }
+          guard.send(:process, "ALL", opeartion) {}
         end
 
         context "returning false" do
           it "does not perform the operation" do
             opeartion.should_not_receive(:call)
 
-            guard.send(:process, 'ALL', opeartion) { false }
+            guard.send(:process, "ALL", opeartion) { false }
           end
         end
 
@@ -143,7 +143,7 @@ module ImapGuard
           it "does perform the operation" do
             opeartion.should_receive(:call).twice
 
-            guard.send(:process, 'ALL', opeartion) { true }
+            guard.send(:process, "ALL", opeartion) { true }
           end
         end
       end
@@ -152,28 +152,28 @@ module ImapGuard
     describe "#move" do
       it "copies emails before adding the :Deleted flag" do
         imap.should_receive(:search)
-        imap.should_receive(:copy).with(7, 'destination').ordered
-        imap.should_receive(:store).with(7, '+FLAGS', [:Deleted]).ordered
-        imap.should_receive(:copy).with(28, 'destination').ordered
-        imap.should_receive(:store).with(28, '+FLAGS', [:Deleted]).ordered
+        imap.should_receive(:copy).with(7, "destination").ordered
+        imap.should_receive(:store).with(7, "+FLAGS", [:Deleted]).ordered
+        imap.should_receive(:copy).with(28, "destination").ordered
+        imap.should_receive(:store).with(28, "+FLAGS", [:Deleted]).ordered
 
-        guard_instance.move 'ALL', 'destination'
+        guard_instance.move "ALL", "destination"
       end
     end
 
     describe "#delete" do
       it "adds the :Deleted flag" do
         imap.should_receive(:search)
-        imap.should_receive(:store).with(7, '+FLAGS', [:Deleted])
-        imap.should_receive(:store).with(28, '+FLAGS', [:Deleted])
+        imap.should_receive(:store).with(7, "+FLAGS", [:Deleted])
+        imap.should_receive(:store).with(28, "+FLAGS", [:Deleted])
 
-        guard_instance.delete 'ALL'
+        guard_instance.delete "ALL"
       end
     end
 
     describe "#each" do
       it "iterates over messages without errors" do
-        guard_instance.each 'ALL' do |message_id|
+        guard_instance.each "ALL" do |message_id|
           # noop
         end
       end
@@ -226,23 +226,22 @@ module ImapGuard
 
         exception = (RUBY_VERSION >= "2.1.0" ? RuntimeError : TypeError)
 
-        expect {
-          guard.settings.host = 'example.net'
-        }.to raise_error(exception, /frozen/)
+        expect do
+          guard.settings.host = "example.net"
+        end.to raise_error(exception, /frozen/)
       end
 
       it "raises ArgumentError if any required key is missing" do
-        expect {
+        expect do
           Guard.new({})
-        }.to raise_error ArgumentError, /missing/i
+        end.to raise_error ArgumentError, /missing/i
       end
 
       it "raises ArgumentError if any key is unknown" do
-        expect {
+        expect do
           Guard.new(settings.merge(coffee: true))
-        }.to raise_error ArgumentError, /unknown/i
+        end.to raise_error ArgumentError, /unknown/i
       end
     end
   end
 end
-
