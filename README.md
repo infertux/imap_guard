@@ -70,7 +70,7 @@ guard.delete base_query.dup.before(7).subject("Logwatch for ") do |mail|
 end
 ```
 
-Finally, you can always forge your own raw IMAP search queries (the [RFC](http://tools.ietf.org/html/rfc3501#section-6.4.4) can help in that case):
+You can always forge your own raw IMAP search queries (the [RFC](http://tools.ietf.org/html/rfc3501#section-6.4.4) can help in that case):
 
 ```ruby
 query = 'SEEN SUBJECT "ALERT" FROM "root"'
@@ -79,19 +79,19 @@ guard.delete query do |mail|
 end
 ```
 
-Be aware that emails won't be touched until you `expunge` or `close` the mailbox:
-
-```ruby
-guard.expunge # effectively delete emails marked as deleted
-guard.close # expunge then close the connection
-```
-
-Oh, and there is a `move` method as well:
+There is a `move` method as well:
 
 ```ruby
 guard.move query, 'destination_folder' do |mail|
   # and it can take a filter block like `delete`
 end
+```
+
+Finally, this should be handled automatically but you can explicitly expunge pending emails and close the connection:
+
+```ruby
+guard.expunge # effectively delete emails marked as deleted
+guard.close # expunge then close the connection
 ```
 
 ### Advanced features
@@ -134,4 +134,3 @@ MIT
 
 
 [Mail]: https://github.com/mikel/mail
-
