@@ -3,9 +3,8 @@ after_script:
   - cane
   - yard stats --list-undoc
 rvm:
-  - 2.2.6
-  - 2.3.3
-  - 2.4.0
+  - 2.3.6
+  - 2.4.3
   - ruby-head
   - rbx
 matrix:
