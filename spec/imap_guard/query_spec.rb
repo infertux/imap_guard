@@ -52,7 +52,7 @@ module ImapGuard
       context "with search keys" do
         it "adds 'OR UNANSWERED UNFLAGGED '" do
           subject.or(:unanswered, :unflagged)
-          subject.last(3).should eq %w(OR UNANSWERED UNFLAGGED)
+          subject.last(3).should eq %w[OR UNANSWERED UNFLAGGED]
         end
       end
 
@@ -101,14 +101,14 @@ module ImapGuard
       context "without a search key" do
         it "adds 'NOT'" do
           subject.not.deleted
-          subject.last(2).should eq %w(NOT DELETED)
+          subject.last(2).should eq %w[NOT DELETED]
         end
       end
 
       context "with a search key" do
         it "adds 'NOT DELETED'" do
           subject.not(:deleted)
-          subject.last(2).should eq %w(NOT DELETED)
+          subject.last(2).should eq %w[NOT DELETED]
         end
       end
     end

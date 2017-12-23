@@ -12,10 +12,10 @@ module ImapGuard
   # Guard allows you to process your mailboxes.
   class Guard
     # List of required settings
-    REQUIRED_SETTINGS = [:host, :port, :username, :password].freeze
+    REQUIRED_SETTINGS = %i[host port username password].freeze
 
     # List of optional settings
-    OPTIONAL_SETTINGS = [:read_only, :verbose].freeze
+    OPTIONAL_SETTINGS = %i[read_only verbose].freeze
 
     # @return [Proc, nil] Matched emails are passed to this debug lambda if present
     attr_accessor :debug
@@ -149,7 +149,6 @@ module ImapGuard
 
         puts result ? operation.call(message_id) : "ignored".green
       end
-
     ensure
       expunge
     end

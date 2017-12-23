@@ -97,7 +97,7 @@ module ImapGuard
 
     describe "#process" do
       let(:guard) { guard_instance(verbose: true) }
-      let(:opeartion) { ->(id) {} }
+      let(:opeartion) { ->(id){} }
 
       context "without a filter block" do
         it "does perform the operation" do
@@ -115,7 +115,7 @@ module ImapGuard
 
         context "with a debug proc" do
           it "calls the proc" do
-            block = ->(mail) {}
+            block = ->(mail){}
             guard.debug = block
             block.should_receive(:call).twice
 
@@ -128,7 +128,7 @@ module ImapGuard
         it "executes the filter block" do
           guard.should_receive(:fetch_mail).twice
 
-          guard.send(:process, "ALL", opeartion) {}
+          guard.send(:process, "ALL", opeartion){}
         end
 
         context "returning false" do
