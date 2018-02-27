@@ -4,13 +4,16 @@ AllCops:
 Metrics:
   Enabled: false
 
-Style/AccessModifierIndentation:
+Layout/AccessModifierIndentation:
   EnforcedStyle: outdent
 
 Style/FormatStringToken:
   Enabled: false
 
 Style/SafeNavigation:
+  Enabled: false
+
+Style/SpecialGlobalVars:
   Enabled: false
 
 Style/StringLiterals:
