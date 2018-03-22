@@ -22,5 +22,5 @@ Style/StringLiterals:
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: comma
 
-Style/TrailingCommaInLiteral:
+Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma
