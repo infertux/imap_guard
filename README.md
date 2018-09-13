@@ -1,13 +1,10 @@
-# ImapGuard [![Build Status](https://secure.travis-ci.org/infertux/imap_guard.png?branch=master)](https://travis-ci.org/infertux/imap_guard) [![Dependency Status](https://gemnasium.com/infertux/imap_guard.png)](https://gemnasium.com/infertux/imap_guard) [![Code Climate](https://codeclimate.com/github/infertux/imap_guard.png)](https://codeclimate.com/github/infertux/imap_guard)
+# ImapGuard
+
+[![Build Status](https://secure.travis-ci.org/infertux/imap_guard.png?branch=master)](https://travis-ci.org/infertux/imap_guard)
+[![Code Climate](https://codeclimate.com/github/infertux/imap_guard.png)](https://codeclimate.com/github/infertux/imap_guard)
+[![Gem Version](https://badge.fury.io/rb/imap_guard.svg)](https://badge.fury.io/rb/imap_guard)
 
 **A guard for your IMAP mailboxes.**
-
-  * [Source Code](https://github.com/infertux/imap_guard "Source Code on Github")
-  * [Bug Tracker](https://github.com/infertux/imap_guard/issues "Bug Tracker on Github")
-  * [API documentation](http://rubydoc.info/gems/imap_guard/frames "API Documentation on Rubydoc")
-  * [Rubygem](https://rubygems.org/gems/imap_guard "ImapGuard on Rubygems")
-  * [Continuous Integration](https://travis-ci.org/infertux/imap_guard "ImapGuard on Travis-CI")
-  * [Dependencies](https://gemnasium.com/infertux/imap_guard "ImapGuard dependencies on Gemnasium")
 
 ImapGuard connects to your IMAP server and processes your emails.
 You can finely pick them thanks to advanced search queries and Ruby blocks.
