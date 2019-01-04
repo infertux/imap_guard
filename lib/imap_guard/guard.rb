@@ -74,9 +74,7 @@ module ImapGuard
     # @return [void]
     def delete(query, &filter)
       operation = lambda do |message_id|
-        unless @settings.read_only
-          @imap.store(message_id, "+FLAGS", [Net::IMAP::DELETED])
-        end
+        @imap.store(message_id, "+FLAGS", [Net::IMAP::DELETED]) unless @settings.read_only
 
         "deleted".red
       end
@@ -154,9 +152,7 @@ module ImapGuard
     end
 
     def search(query)
-      unless [Array, String].any? { |type| query.is_a? type }
-        raise TypeError, "Query must be either a string holding the entire search string, or a single-dimension array of search keywords and arguments."
-      end
+      raise TypeError, "Query must be either a string holding the entire search string, or a single-dimension array of search keywords and arguments." unless [Array, String].any? { |type| query.is_a? type }
 
       messages = @imap.search query
       puts "Query on #{mailbox}: #{query.inspect}: #{messages.count} results".cyan
