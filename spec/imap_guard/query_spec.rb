@@ -9,35 +9,35 @@ module ImapGuard
     describe "#seen" do
       it "adds 'SEEN'" do
         subject.seen
-        subject.last.should eq "SEEN"
+        expect(subject.last).to eq "SEEN"
       end
     end
 
     describe "#unseen" do
       it "adds 'UNSEEN'" do
         subject.unseen
-        subject.last.should eq "UNSEEN"
+        expect(subject.last).to eq "UNSEEN"
       end
     end
 
     describe "#unanswered" do
       it "adds 'UNANSWERED'" do
         subject.unanswered
-        subject.last.should eq "UNANSWERED"
+        expect(subject.last).to eq "UNANSWERED"
       end
     end
 
     describe "#unflagged" do
       it "adds 'UNFLAGGED'" do
         subject.unflagged
-        subject.last.should eq "UNFLAGGED"
+        expect(subject.last).to eq "UNFLAGGED"
       end
     end
 
     describe "#deleted" do
       it "adds 'DELETED'" do
         subject.deleted
-        subject.last.should eq "DELETED"
+        expect(subject.last).to eq "DELETED"
       end
     end
 
@@ -45,14 +45,14 @@ module ImapGuard
       context "without a search key" do
         it "adds 'OR'" do
           subject.or
-          subject.last.should eq "OR"
+          expect(subject.last).to eq "OR"
         end
       end
 
       context "with search keys" do
         it "adds 'OR UNANSWERED UNFLAGGED '" do
           subject.or(:unanswered, :unflagged)
-          subject.last(3).should eq %w[OR UNANSWERED UNFLAGGED]
+          expect(subject.last(3)).to eq %w[OR UNANSWERED UNFLAGGED]
         end
       end
 
@@ -72,28 +72,28 @@ module ImapGuard
     describe "#subject" do
       it "adds the search value" do
         subject.subject("Hey you")
-        subject.last.should eq "Hey you"
+        expect(subject.last).to eq "Hey you"
       end
     end
 
     describe "#from" do
       it "adds the search value" do
         subject.from("root@example.net")
-        subject.last.should eq "root@example.net"
+        expect(subject.last).to eq "root@example.net"
       end
     end
 
     describe "#to" do
       it "adds the search value" do
         subject.to("root@example.net")
-        subject.last.should eq "root@example.net"
+        expect(subject.last).to eq "root@example.net"
       end
     end
 
     describe "#cc" do
       it "adds the search value" do
         subject.cc("root@example.net")
-        subject.last.should eq "root@example.net"
+        expect(subject.last).to eq "root@example.net"
       end
     end
 
@@ -101,14 +101,14 @@ module ImapGuard
       context "without a search key" do
         it "adds 'NOT'" do
           subject.not.deleted
-          subject.last(2).should eq %w[NOT DELETED]
+          expect(subject.last(2)).to eq %w[NOT DELETED]
         end
       end
 
       context "with a search key" do
         it "adds 'NOT DELETED'" do
           subject.not(:deleted)
-          subject.last(2).should eq %w[NOT DELETED]
+          expect(subject.last(2)).to eq %w[NOT DELETED]
         end
       end
     end
@@ -125,28 +125,28 @@ module ImapGuard
       context "when I pass '1' as an argument" do
         it "returns yesterday" do
           subject.before(1)
-          Date.parse(subject.last).should eq Date.today.prev_day
+          expect(Date.parse(subject.last)).to eq Date.today.prev_day
         end
       end
 
       context "when I pass an integer" do
         it "uses it as a negative offset in days" do
           subject.before(3)
-          (Date.today - Date.parse(subject.last)).should eq 3
+          expect((Date.today - Date.parse(subject.last))).to eq 3
         end
       end
 
       context "when I pass '18-Mar-2013' as an argument" do
         it "uses it as is" do
           subject.before("18-Mar-2013")
-          subject.last.should eq "18-Mar-2013"
+          expect(subject.last).to eq "18-Mar-2013"
         end
       end
 
       context "when I pass an instance of Date as an argument" do
         it "extracts the date" do
           subject.before(Date.today)
-          Date.parse(subject.last).should eq Date.today
+          expect(Date.parse(subject.last)).to eq Date.today
         end
       end
     end
