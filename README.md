@@ -1,8 +1,9 @@
 # ImapGuard
 
+[![Gem Version](https://badge.fury.io/rb/imap_guard.svg)](https://badge.fury.io/rb/imap_guard)
 [![Build Status](https://secure.travis-ci.org/infertux/imap_guard.png?branch=master)](https://travis-ci.org/infertux/imap_guard)
 [![Code Climate](https://codeclimate.com/github/infertux/imap_guard.png)](https://codeclimate.com/github/infertux/imap_guard)
-[![Gem Version](https://badge.fury.io/rb/imap_guard.svg)](https://badge.fury.io/rb/imap_guard)
+[![Inline docs](http://inch-ci.org/github/infertux/imap_guard.svg)](http://inch-ci.org/github/infertux/imap_guard)
 
 **A guard for your IMAP mailboxes.**
 
