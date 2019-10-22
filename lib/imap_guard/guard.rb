@@ -5,7 +5,7 @@ require "ostruct"
 require "mail"
 require "term/ansicolor"
 
-String.send(:include, Term::ANSIColor)
+String.include Term::ANSIColor
 Term::ANSIColor.coloring = STDOUT.isatty
 
 module ImapGuard
