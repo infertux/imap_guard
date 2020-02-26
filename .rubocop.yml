@@ -1,11 +1,14 @@
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
 
 Metrics:
   Enabled: false
 
 Layout/AccessModifierIndentation:
   EnforcedStyle: outdent
+
+Layout/LineLength:
+  Enabled: false
 
 Style/FormatStringToken:
   Enabled: false

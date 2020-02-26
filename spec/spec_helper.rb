@@ -9,4 +9,4 @@ end
 
 require "imap_guard"
 
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |file| require file }
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |file| require file }
