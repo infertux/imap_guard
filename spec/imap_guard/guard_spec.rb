@@ -128,7 +128,7 @@ module ImapGuard
         it "executes the filter block" do
           expect(guard).to receive(:fetch_mail).twice
 
-          guard.send(:process, "ALL", opeartion) {}
+          guard.send(:process, "ALL", opeartion) { nil }
         end
 
         context "returning false" do

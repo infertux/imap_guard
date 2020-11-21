@@ -18,6 +18,8 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
+  spec.required_ruby_version = ">= 2.5.8"
+
   spec.add_dependency "mail", ">= 2.5.3"
   spec.add_dependency "term-ansicolor", ">= 1.2.2"
 

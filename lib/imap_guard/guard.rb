@@ -6,7 +6,7 @@ require "mail"
 require "term/ansicolor"
 
 String.include Term::ANSIColor
-Term::ANSIColor.coloring = STDOUT.isatty
+Term::ANSIColor.coloring = $stdout.isatty
 
 module ImapGuard
   # Guard allows you to process your mailboxes.
@@ -86,7 +86,7 @@ module ImapGuard
     # @param opration Lambda to call on each message
     # @return [void]
     def each(query)
-      operation = ->(message_id) { yield message_id }
+      operation = ->(message_id) { yield message_id } # rubocop:disable Style/ExplicitBlockArgument
       process query, operation
     end
 
