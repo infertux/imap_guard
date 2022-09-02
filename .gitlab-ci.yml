@@ -6,9 +6,6 @@ before_script:
   - ruby -v
   - bundle install -j $(nproc)
 
-cane:
-  script: cane
-
 rspec:
   script: rspec spec
 

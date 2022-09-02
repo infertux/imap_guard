@@ -1,3 +1,7 @@
+require:
+  - rubocop-rake
+  - rubocop-rspec
+
 AllCops:
   TargetRubyVersion: 3.0
   NewCops: enable
@@ -9,16 +13,7 @@ Layout/AccessModifierIndentation:
   EnforcedStyle: outdent
 
 Layout/LineLength:
-  Enabled: false
-
-Style/FormatStringToken:
-  Enabled: false
-
-Style/SafeNavigation:
-  Enabled: false
-
-Style/SpecialGlobalVars:
-  Enabled: false
+  Enabled: 100
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
@@ -28,3 +23,24 @@ Style/TrailingCommaInArguments:
 
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/ExpectInHook:
+  Enabled: false
+
+RSpec/ExpectOutput:
+  Enabled: false
+
+RSpec/MessageSpies:
+  Enabled: false # TODO: enable
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Enabled: false

@@ -20,7 +20,7 @@ module ImapGuard
     end
 
     let(:imap) do
-      double("Net::IMAP", search: [7, 28], expunge: nil, select: nil, list: [])
+      instance_double(Net::IMAP, search: [7, 28], expunge: nil, select: nil, list: [])
     end
 
     def guard_instance(custom_settings = {})
@@ -80,13 +80,13 @@ module ImapGuard
       it "accepts arrays" do
         expect do
           guard_instance.send(:search, ["ALL"])
-        end.to_not raise_error
+        end.not_to raise_error
       end
 
       it "accepts strings" do
         expect do
           guard_instance.send(:search, "ALL")
-        end.to_not raise_error
+        end.not_to raise_error
       end
 
       it "returns results" do
@@ -131,7 +131,7 @@ module ImapGuard
           guard.send(:process, "ALL", opeartion) { nil }
         end
 
-        context "returning false" do
+        context "when returning false" do
           it "does not perform the operation" do
             expect(opeartion).not_to receive(:call)
 
@@ -139,7 +139,7 @@ module ImapGuard
           end
         end
 
-        context "returning true" do
+        context "when returning true" do
           it "does perform the operation" do
             expect(opeartion).to receive(:call).twice
 
@@ -222,7 +222,7 @@ module ImapGuard
 
     describe "#settings=" do
       it "freezes the settings" do
-        guard = Guard.new(settings)
+        guard = described_class.new(settings)
 
         exception = (RUBY_VERSION >= "2.1.0" ? RuntimeError : TypeError)
 
@@ -233,13 +233,13 @@ module ImapGuard
 
       it "raises ArgumentError if any required key is missing" do
         expect do
-          Guard.new({})
+          described_class.new({})
         end.to raise_error ArgumentError, /missing/i
       end
 
       it "raises ArgumentError if any key is unknown" do
         expect do
-          Guard.new(settings.merge(coffee: true))
+          described_class.new(settings.merge(coffee: true))
         end.to raise_error ArgumentError, /unknown/i
       end
     end

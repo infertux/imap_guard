@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/infertux/imap_guard"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files`.split($/)
+  spec.files         = `git ls-files`.split($/) # rubocop:disable Style/SpecialGlobalVars
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
@@ -25,11 +25,12 @@ Gem::Specification.new do |spec|
   spec.add_dependency "term-ansicolor", ">= 1.2.2"
 
   spec.add_development_dependency "bundler", ">= 1.3"
-  spec.add_development_dependency "cane"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "redcarpet" # for yardoc
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rubocop"
+  spec.add_development_dependency "rubocop-rake"
+  spec.add_development_dependency "rubocop-rspec"
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "yard"
   spec.metadata["rubygems_mfa_required"] = "true"

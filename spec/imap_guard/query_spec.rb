@@ -3,7 +3,7 @@
 module ImapGuard
   describe Query do
     describe "#initialize" do
-      it { should be_empty }
+      it { is_expected.to be_empty }
     end
 
     describe "#seen" do

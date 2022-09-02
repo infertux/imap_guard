@@ -17,11 +17,13 @@ module ImapGuard
     # List of optional settings
     OPTIONAL_SETTINGS = %i[read_only verbose].freeze
 
+    Settings = Struct.new("Settings", *(REQUIRED_SETTINGS + OPTIONAL_SETTINGS))
+
     # @return [Proc, nil] Matched emails are passed to this debug lambda if present
     attr_accessor :debug
 
     # @note The settings are frozen
-    # @return [OpenStruct] ImapGuard settings
+    # @return [Struct::Settings] ImapGuard settings
     attr_reader :settings
 
     # @return [String, nil] Currently selected mailbox
@@ -137,7 +139,7 @@ module ImapGuard
         if block_given? || debug
           mail = fetch_mail message_id
 
-          debug.call(mail) if debug
+          debug.call(mail) if debug # rubocop:disable Style/SafeNavigation
 
           if block_given?
             result = yield(mail)
@@ -152,7 +154,9 @@ module ImapGuard
     end
 
     def search(query)
-      raise TypeError, "Query must be either a string holding the entire search string, or a single-dimension array of search keywords and arguments." unless [Array, String].any? { |type| query.is_a? type }
+      unless [Array, String].any? { |type| query.is_a? type }
+        raise TypeError, "Query must be either a string holding the entire search string, or a single-dimension array of search keywords and arguments."
+      end
 
       messages = @imap.search query
       puts "Query on #{mailbox}: #{query.inspect}: #{messages.count} results".cyan
@@ -178,7 +182,8 @@ module ImapGuard
       unknown = settings.keys - REQUIRED_SETTINGS - OPTIONAL_SETTINGS
       raise ArgumentError, "Unknown settings: #{unknown}" unless unknown.empty?
 
-      @settings = OpenStruct.new(settings).freeze
+      struct = Settings.members.map { |member| settings.fetch(member, false) }
+      @settings = Settings.new(*struct).freeze
       puts "DRY-RUN MODE ENABLED".yellow.bold.negative if @settings.read_only
     end
   end
