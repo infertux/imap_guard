@@ -1,0 +1,19 @@
+# Official language image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/ruby/tags/
+image: ruby:latest
+
+before_script:
+  - ruby -v
+  - bundle install -j $(nproc)
+
+cane:
+  script: cane
+
+rspec:
+  script: rspec spec
+
+rubocop:
+  script: rubocop
+
+yard:
+  script: yard stats --list-undoc

@@ -1,7 +1,0 @@
-language: ruby
-after_script:
-  - cane
-  - yard stats --list-undoc
-rvm:
-  - 3.1.2
-  - 3.0.4
