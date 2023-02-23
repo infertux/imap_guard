@@ -173,9 +173,11 @@ module ImapGuard
 
     describe "#each" do
       it "iterates over messages without errors" do
-        guard_instance.each "ALL" do |message_id|
-          # noop
-        end
+        expect do
+          guard_instance.each "ALL" do |message_id|
+            # noop
+          end
+        end.not_to raise_error
       end
     end
 

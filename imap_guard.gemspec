@@ -17,21 +17,11 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = ">= 3.0.4"
+  spec.required_ruby_version = ">= 3.0.5"
+
+  spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.add_dependency "mail", ">= 2.7.1"
   spec.add_dependency "net-imap"
-  spec.add_dependency "net-smtp" # TODO: remove when https://github.com/mikel/mail/issues/1482 resolved
   spec.add_dependency "term-ansicolor", ">= 1.2.2"
-
-  spec.add_development_dependency "bundler", ">= 1.3"
-  spec.add_development_dependency "rake"
-  spec.add_development_dependency "redcarpet" # for yardoc
-  spec.add_development_dependency "rspec"
-  spec.add_development_dependency "rubocop"
-  spec.add_development_dependency "rubocop-rake"
-  spec.add_development_dependency "rubocop-rspec"
-  spec.add_development_dependency "simplecov"
-  spec.add_development_dependency "yard"
-  spec.metadata["rubygems_mfa_required"] = "true"
 end
