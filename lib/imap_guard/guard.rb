@@ -37,7 +37,7 @@ module ImapGuard
     # @see http://www.ruby-doc.org/stdlib-1.9.3/libdoc/net/imap/rdoc/Net/IMAP.html#method-c-new
     # @return [void]
     def login
-      @imap = Net::IMAP.new(@settings.host, @settings.port, true, nil, false)
+      @imap = Net::IMAP.new(@settings.host, port: @settings.port, ssl: true)
       @imap.login(@settings.username, @settings.password)
       verbose.puts "Logged in successfully"
     end
